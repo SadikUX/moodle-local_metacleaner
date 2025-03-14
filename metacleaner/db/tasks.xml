@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tasks>
+    <task name="local_metacleaner\task\meta_enrol_cleanup" 
+          class="meta_enrol_cleanup" 
+          typename="scheduled_task" 
+          file="task/meta_enrol_cleanup.php" 
+          function="execute" 
+          minute="0" 
+          hour="*/1" 
+          day="*" 
+          month="*" 
+          dayofweek="*">
+          <description>Meta Enrol Cleanup Task</description>
+    </task>
+</tasks>
