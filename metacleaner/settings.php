@@ -50,4 +50,11 @@ if ($hassiteconfig) {
 
     // Register the settings page under 'localplugins'.
     $ADMIN->add('localplugins', $settings);
+
+    // Add an external page for the preview functionality.
+    $ADMIN->add('localplugins', new admin_externalpage(
+        'local_metacleaner_preview',
+        get_string('previewheading', 'local_metacleaner'),
+        new moodle_url('/local/metacleaner/preview.php')
+    ));
 }

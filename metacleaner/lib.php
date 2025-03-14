@@ -31,6 +31,12 @@
 function local_metacleaner_cron() {
     global $DB;
 
+    // Check if the plugin is enabled.
+    if (!get_config('local_metacleaner', 'enable')) {
+        // If the plugin is disabled, exit the function.
+        return;
+    }
+
     // Get all courses whose end date has passed.
     $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
     // Get the user's preference from the settings (1 = deactivate, 2 = delete).

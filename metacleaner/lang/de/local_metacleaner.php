@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Language strings for the MetaCleaner local plugin.
+ * German language strings for the MetaCleaner local plugin.
  *
  * @package     local_metacleaner
  * @copyright   2025 Sadik Mert
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- $string['courseid'] = 'Course ID';
- $string['coursename'] = 'Course name';
- $string['deactivate'] = 'Deactivate';
- $string['delete'] = 'Delete';
- $string['enable'] = 'Enable Meta Cleaner';
- $string['enable_help'] = 'Enable the Meta Cleaner functionality, which will clean up expired meta enrolments.';
- $string['enrolaction'] = 'Action for expired meta enrolments';
- $string['enrolaction_help'] = 'Select the action to be performed on expired meta enrolments. You can either deactivate them (keep them inactive) or delete them entirely.';
- $string['metaenrolments'] = 'Meta enrolments';
- $string['nocourses'] = 'There are no courses with expired end dates.';
+ $string['courseid'] = 'Kurs-ID';
+ $string['coursename'] = 'Kursname';
+ $string['deactivate'] = 'Deaktivieren';
+ $string['delete'] = 'Löschen';
+ $string['enable'] = 'Meta Cleaner aktivieren';
+ $string['enable_help'] = 'Aktivieren Sie die Meta Cleaner-Funktionalität, die abgelaufene Meta-Einschreibungen bereinigt.';
+ $string['enrolaction'] = 'Aktion für abgelaufene Meta-Einschreibungen';
+ $string['enrolaction_help'] = 'Wählen Sie die Aktion, die für abgelaufene Meta-Einschreibungen ausgeführt werden soll. Sie können sie entweder deaktivieren (inaktiv halten) oder vollständig löschen.';
+ $string['metaenrolments'] = 'Meta-Einschreibungen';
+ $string['nocourses'] = 'Es gibt keine Kurse mit abgelaufenem Enddatum.';
  $string['pluginname'] = 'Meta Cleaner';
- $string['previewheading'] = 'Preview affected courses';
+ $string['previewheading'] = 'Vorschau der betroffenen Kurse';
