@@ -28,11 +28,7 @@ The plugin runs scheduled tasks that automatically manage meta-enrollments for e
 
 ## Language Files
 
-The plugin supports multiple languages. All messages are pulled from the language file configured for your Moodle installation.
-
-### Example Messages:
-- **Meta-Enrollment Disabled**: "The meta-enrollment for the course `{coursename}` has been disabled. `{usercount}` users were affected."
-- **Meta-Enrollment Deleted**: "The meta-enrollment for the course `{coursename}` has been deleted. `{usercount}` users were removed."
+The plugin currently supports English. Support for additional languages, including German, is planned for future updates. All messages are pulled from the language file configured for your Moodle installation.
 
 ## Developer
 
