@@ -34,7 +34,6 @@ $string['coursename'] = 'Kursname';
 
 $string['deactivate'] = 'Deaktivieren';
 $string['delete'] = 'Löschen';
-$string['deletion_not_confirmed'] = 'Löschung wurde in den Meta Cleaner-Einstellungen nicht bestätigt.';
 
 
 $string['enable'] = 'Meta Cleaner aktivieren';

@@ -52,10 +52,6 @@ function local_metacleaner_cron() {
         return;
     }
 
-    if ($action == 2 && !get_config('local_metacleaner', 'confirmdeletion')) {
-        throw new moodle_exception('deletion_not_confirmed', 'local_metacleaner');
-    }
-
     // Get all courses whose end date has passed.
     $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
 
