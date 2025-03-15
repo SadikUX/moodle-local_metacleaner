@@ -30,6 +30,7 @@
  $string['enable_help'] = 'Enable the Meta Cleaner functionality, which will clean up expired meta enrolments.';
  $string['enrolaction'] = 'Action for expired meta enrolments';
  $string['enrolaction_help'] = 'Select the action to be performed on expired meta enrolments. You can either deactivate them (keep them inactive) or delete them entirely.';
+ $string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
  $string['metaenrolments'] = 'Meta enrolments';
  $string['nocourses'] = 'There are no courses with expired end dates.';
  $string['pluginname'] = 'Meta Cleaner';

@@ -30,6 +30,7 @@
  $string['enable_help'] = 'Aktivieren Sie die Meta Cleaner-Funktionalität, die abgelaufene Meta-Einschreibungen bereinigt.';
  $string['enrolaction'] = 'Aktion für abgelaufene Meta-Einschreibungen';
  $string['enrolaction_help'] = 'Wählen Sie die Aktion, die für abgelaufene Meta-Einschreibungen ausgeführt werden soll. Sie können sie entweder deaktivieren (inaktiv halten) oder vollständig löschen.';
+ $string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
  $string['metaenrolments'] = 'Meta-Einschreibungen';
  $string['nocourses'] = 'Es gibt keine Kurse mit abgelaufenem Enddatum.';
  $string['pluginname'] = 'Meta Cleaner';
