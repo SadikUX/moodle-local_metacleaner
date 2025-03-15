@@ -27,5 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'local_metacleaner';
 $plugin->version   = 2025031508;
 $plugin->requires  = 2021051700;
-$plugin->maturity  = MATURITY_STABLE;
+$plugin->maturity  = MATURITY_BETA;
 $plugin->release   = '1.0.0';
