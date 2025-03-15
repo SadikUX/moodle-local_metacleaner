@@ -33,6 +33,7 @@ function local_metacleaner_cron() {
 
     // Check if the plugin is enabled.
     if (!get_config('local_metacleaner', 'enable')) {
+        mtrace(get_string('plugin_disabled', 'local_metacleaner'));
         return;
     }
 
@@ -42,10 +43,33 @@ function local_metacleaner_cron() {
     $maxusers = get_config('local_metacleaner', 'maxusers');
     $mindays = get_config('local_metacleaner', 'mindays');
 
+    if (!isset($action) || !in_array($action, [1, 2])) {
+        mtrace(get_string('invalid_action', 'local_metacleaner'));
+        return;
+    }
+    if ($maxusers < 0 || $mindays < 0) {
+        mtrace(get_string('invalid_config', 'local_metacleaner'));
+        return;
+    }
+
+    if ($action == 2 && !get_config('local_metacleaner', 'confirmdeletion')) {
+        throw new moodle_exception('deletion_not_confirmed', 'local_metacleaner');
+    }
+
     // Get all courses whose end date has passed.
     $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
 
+    if (!$expiredcourses) {
+        mtrace(get_string('no_expired_courses', 'local_metacleaner'));
+        return;
+    }
+
     foreach ($expiredcourses as $course) {
+        if (empty($course->enddate) || empty($course->category)) {
+            mtrace(get_string('missing_course_data', 'local_metacleaner', $course->id));
+            continue;
+        }
+
         // Apply category filter.
         if ($categoryfilter && $course->category != $categoryfilter) {
             continue;
@@ -64,22 +88,56 @@ function local_metacleaner_cron() {
             $totalusers += $DB->count_records('user_enrolments', ['enrolid' => $enrol->id]);
         }
 
+        if ($totalusers < 0) {
+            mtrace(get_string('invalid_user_count', 'local_metacleaner', $course->id));
+            continue;
+        }
+
         // Apply max users filter.
         if ($totalusers > $maxusers) {
             continue;
         }
 
-        // Perform the action (deactivate or delete).
+        if (empty($metaenrolments)) {
+            mtrace(get_string('no_meta_enrolments', 'local_metacleaner', $course->id));
+            continue; // Skip courses without meta enrolments.
+        }
+
         foreach ($metaenrolments as $enrol) {
-            if ($action == 1) {
-                // Deactivate the meta enrolment.
-                $DB->set_field('enrol', 'status', 1, ['id' => $enrol->id]);
-            } else if ($action == 2) {
-                // Delete all users in this meta enrolment.
-                $DB->delete_records('user_enrolments', ['enrolid' => $enrol->id]);
-                // Delete the meta enrolment itself.
-                $DB->delete_records('enrol', ['id' => $enrol->id]);
+            if (empty($enrol->customint1)) {
+                mtrace(get_string('missing_customint1', 'local_metacleaner', $enrol->id));
+                continue;
             }
+        }
+
+        mtrace(get_string('processing_course', 'local_metacleaner', [
+            'id' => $course->id,
+            'fullname' => $course->fullname,
+            'users' => $totalusers,
+        ]));
+
+        // Perform the action (deactivate or delete).
+        $transaction = $DB->start_delegated_transaction();
+        try {
+            foreach ($metaenrolments as $enrol) {
+                if ($action == 1) {
+                    // Deactivate the meta enrolment.
+                    $DB->set_field('enrol', 'status', 1, ['id' => $enrol->id]);
+                } else if ($action == 2) {
+                    // Delete all users in this meta enrolment.
+                    $DB->delete_records('user_enrolments', ['enrolid' => $enrol->id]);
+                    // Delete the meta enrolment itself.
+                    $DB->delete_records('enrol', ['id' => $enrol->id]);
+                }
+            }
+            $transaction->allow_commit();
+        } catch (Exception $e) {
+            $transaction->rollback($e);
+            mtrace(get_string('error_processing_course', 'local_metacleaner', [
+                'id' => $course->id,
+                'message' => $e->getMessage(),
+            ]));
+            continue;
         }
     }
 }

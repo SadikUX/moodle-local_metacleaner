@@ -53,6 +53,13 @@ class meta_enrol_cleanup extends \core\task\scheduled_task {
      * This method calls the cron function to handle the clean-up process.
      */
     public function execute() {
-        local_metacleaner_cron();
+        try {
+            // Call the main cleanup function.
+            local_metacleaner_cron();
+        } catch (\Exception $e) {
+            // Log the error to the Moodle logs for debugging purposes.
+            mtrace('Error in MetaCleaner task: ' . $e->getMessage());
+            debugging('MetaCleaner task failed: ' . $e->getTraceAsString(), DEBUG_DEVELOPER);
+        }
     }
 }

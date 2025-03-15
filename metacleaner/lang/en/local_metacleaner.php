@@ -34,17 +34,24 @@ $string['coursename'] = 'Course name';
 
 $string['deactivate'] = 'Deactivate';
 $string['delete'] = 'Delete';
+$string['deletion_not_confirmed'] = 'Deletion not confirmed in MetaCleaner settings.';
 
 
 $string['enable'] = 'Enable Meta Cleaner';
 $string['enable_help'] = 'Enable the Meta Cleaner functionality, which will clean up expired meta enrolments.';
 $string['enrolaction'] = 'Action for expired meta enrolments';
 $string['enrolaction_help'] = 'Select the action to be performed on expired meta enrolments. You can either deactivate them (keep them inactive) or delete them entirely.';
+$string['error_processing_course'] = 'Error processing course {$a->id}: {$a->message}';
 $string['exportcsv'] = 'Export as CSV';
 
 
 $string['filterbycategory'] = 'Filter by category';
 $string['filterbycategory_help'] = 'Only clean up courses in the selected category.';
+
+
+$string['invalid_action'] = 'Invalid action configuration. Skipping cleanup.';
+$string['invalid_config'] = 'Invalid maxusers or mindays configuration. Skipping cleanup.';
+$string['invalid_user_count'] = 'Skipping course {$a} due to invalid user count.';
 
 
 $string['maxusers'] = 'Maximum number of users';
@@ -53,11 +60,17 @@ $string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
 $string['metaenrolments'] = 'Meta enrolments';
 $string['mindays'] = 'Minimum days since course end';
 $string['mindays_help'] = 'Only clean up courses that ended at least this many days ago.';
+$string['missing_course_data'] = 'Skipping course {$a} due to missing end date or category.';
+$string['missing_customint1'] = 'Skipping enrolment {$a} due to missing customint1 value.';
 
 
+$string['no_expired_courses'] = 'No expired courses found. Exiting.';
+$string['no_meta_enrolments'] = 'No meta enrolments found for course {$a}. Skipping.';
 $string['nocourses'] = 'No courses match the selected criteria.';
 
 
+$string['plugin_disabled'] = 'MetaCleaner is disabled. Exiting.';
 $string['pluginname'] = 'Meta Cleaner';
 $string['pluginnotenabled'] = 'Meta Cleaner not enabled.';
 $string['previewheading'] = 'Preview affected courses';
+$string['processing_course'] = 'Processing course {$a->id} ({$a->fullname}) with {$a->users} users.';
