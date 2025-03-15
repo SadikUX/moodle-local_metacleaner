@@ -22,21 +22,6 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-<<<<<<< HEAD
- $string['courseid'] = 'Course ID';
- $string['coursename'] = 'Course name';
- $string['deactivate'] = 'Deactivate';
- $string['delete'] = 'Delete';
- $string['enable'] = 'Enable Meta Cleaner';
- $string['enable_help'] = 'Enable the Meta Cleaner functionality, which will clean up expired meta enrolments.';
- $string['enrolaction'] = 'Action for expired meta enrolments';
- $string['enrolaction_help'] = 'Select the action to be performed on expired meta enrolments. You can either deactivate them (keep them inactive) or delete them entirely.';
- $string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
- $string['metaenrolments'] = 'Meta enrolments';
- $string['nocourses'] = 'There are no courses with expired end dates.';
- $string['pluginname'] = 'Meta Cleaner';
- $string['previewheading'] = 'Preview affected courses';
-=======
 
 $string['action'] = 'Action';
 $string['affectedusers'] = 'Affected users';
@@ -76,4 +61,3 @@ $string['nocourses'] = 'No courses match the selected criteria.';
 $string['pluginname'] = 'Meta Cleaner';
 $string['pluginnotenabled'] = 'Meta Cleaner not enabled.';
 $string['previewheading'] = 'Preview affected courses';
->>>>>>> dev
