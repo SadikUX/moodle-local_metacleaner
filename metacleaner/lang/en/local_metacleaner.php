@@ -55,6 +55,8 @@ $string['invalid_user_count'] = 'Skipping course {$a} due to invalid user count.
 
 $string['maxusers'] = 'Maximum number of users';
 $string['maxusers_help'] = 'Only clean up courses with fewer than this number of users.';
+$string['meta_enrolment_note'] = '<span style="color: red;">If a course end date is extended or removed, the deactivated meta enrolments will be automatically reactivated by this plugin.</span>';
+$string['metacleaner:manage'] = 'Manage the MetaCleaner plugin';
 $string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
 $string['metaenrolments'] = 'Meta enrolments';
 $string['mindays'] = 'Minimum days since course end';
@@ -72,4 +74,8 @@ $string['plugin_disabled'] = 'MetaCleaner is disabled. Exiting.';
 $string['pluginname'] = 'Meta Cleaner';
 $string['pluginnotenabled'] = 'Meta Cleaner not enabled.';
 $string['previewheading'] = 'Preview affected courses';
+$string['privacy:metadata'] = 'The MetaCleaner plugin does not store any personal data.';
 $string['processing_course'] = 'Processing course {$a->id} ({$a->fullname}) with {$a->users} users.';
+
+
+$string['reactivated_meta_enrolment'] = 'Reactivated meta enrolment with ID {$a}.';

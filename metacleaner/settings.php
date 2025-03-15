@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
+if ($hassiteconfig && has_capability('local/metacleaner:manage', context_system::instance())) {
     // Create a new settings page for the plugin.
     $settings = new admin_settingpage('local_metacleaner', get_string('pluginname', 'local_metacleaner'));
 
@@ -40,7 +40,7 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_configselect(
         'local_metacleaner/action',
         get_string('enrolaction', 'local_metacleaner'),
-        get_string('enrolaction_help', 'local_metacleaner'),
+        get_string('enrolaction_help', 'local_metacleaner') . '<br>' . get_string('meta_enrolment_note', 'local_metacleaner'),
         1, // Default value: 1 = deactivate, 2 = delete.
         [
             1 => get_string('deactivate', 'local_metacleaner'), // Deactivate option.

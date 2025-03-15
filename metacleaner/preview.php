@@ -25,7 +25,10 @@
 require_once(__DIR__ . '/../../config.php'); // Include Moodle's main configuration file.
 require_once($CFG->libdir . '/adminlib.php'); // Include Moodle's admin library for admin page setup.
 
-// Restrict access to administrators only.
+// Check if user has capability.
+require_capability('local/metacleaner:manage', context_system::instance());
+
+// Set up the page as an external admin page and check access based on the 'local/metacleaner:manage' capability.
 admin_externalpage_setup('local_metacleaner_preview');
 
 // Check if the plugin is enabled in the settings.

@@ -55,6 +55,8 @@ $string['invalid_user_count'] = 'Kurs {$a} wird übersprungen, da die Nutzeranza
 
 $string['maxusers'] = 'Maximale Anzahl von Nutzern';
 $string['maxusers_help'] = 'Bereinige nur Kurse mit weniger als dieser Anzahl von Nutzern.';
+$string['meta_enrolment_note'] = '<span style="color: red;">Wird das Kursende verlängert oder entfernt, werden die deaktivierten Meta-Einschreibungen automatisch durch dieses Plugin reaktiviert.</span>';
+$string['metacleaner:manage'] = 'Das MetaCleaner-Plugin verwalten';
 $string['metaenrolcleanup'] = 'Meta-Einschreibungsbereinigung';
 $string['metaenrolments'] = 'Meta-Einschreibungen';
 $string['mindays'] = 'Minimale Tage seit Kursende';
@@ -72,4 +74,8 @@ $string['plugin_disabled'] = 'Meta Cleaner ist deaktiviert. Vorgang wird beendet
 $string['pluginname'] = 'Meta Cleaner';
 $string['pluginnotenabled'] = 'Meta Cleaner ist nicht aktiviert.';
 $string['previewheading'] = 'Vorschau der betroffenen Kurse';
+$string['privacy:metadata'] = 'Das MetaCleaner-Plugin speichert keine personenbezogenen Daten.';
 $string['processing_course'] = 'Kurs {$a->id} ({$a->fullname}) mit {$a->users} Nutzern wird verarbeitet.';
+
+
+$string['reactivated_meta_enrolment'] = 'Meta-Einschreibung mit der ID {$a} wurde reaktiviert.';

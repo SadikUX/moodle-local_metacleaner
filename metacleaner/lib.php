@@ -43,6 +43,7 @@ function local_metacleaner_cron() {
     $maxusers = get_config('local_metacleaner', 'maxusers');
     $mindays = get_config('local_metacleaner', 'mindays');
 
+    // Validate settings.
     if (!isset($action) || !in_array($action, [1, 2])) {
         mtrace(get_string('invalid_action', 'local_metacleaner'));
         return;
@@ -52,15 +53,22 @@ function local_metacleaner_cron() {
         return;
     }
 
-    // Get all courses whose end date has passed.
-    $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
+    // Get all courses.
+    $courses = $DB->get_records('course');
 
-    if (!$expiredcourses) {
-        mtrace(get_string('no_expired_courses', 'local_metacleaner'));
-        return;
-    }
+    foreach ($courses as $course) {
+        // Check if the course end date has been removed or extended to the future.
+        if (empty($course->enddate) || $course->enddate > time() || (time() - $course->enddate) / DAYSECS < $mindays) {
+            // Reactivate any deactivated meta enrolments for this course.
+            $metaenrolments = $DB->get_records('enrol', ['enrol' => 'meta', 'customint1' => $course->id, 'status' => 1]);
+            foreach ($metaenrolments as $enrol) {
+                $DB->set_field('enrol', 'status', 0, ['id' => $enrol->id]);
+                mtrace(get_string('reactivated_meta_enrolment', 'local_metacleaner', $enrol->id));
+            }
+            continue; // Skip further processing for this course.
+        }
 
-    foreach ($expiredcourses as $course) {
+        // Skip courses without an end date or category.
         if (empty($course->enddate) || empty($course->category)) {
             mtrace(get_string('missing_course_data', 'local_metacleaner', $course->id));
             continue;
@@ -108,7 +116,7 @@ function local_metacleaner_cron() {
 
         mtrace(get_string('processing_course', 'local_metacleaner', [
             'id' => $course->id,
-            'fullname' => $course->fullname,
+            'fullname' => format_string($course->fullname), // Escape output.
             'users' => $totalusers,
         ]));
 
@@ -131,7 +139,7 @@ function local_metacleaner_cron() {
             $transaction->rollback($e);
             mtrace(get_string('error_processing_course', 'local_metacleaner', [
                 'id' => $course->id,
-                'message' => $e->getMessage(),
+                'message' => s($e->getMessage()), // Escape exception message.
             ]));
             continue;
         }
