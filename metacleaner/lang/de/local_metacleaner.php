@@ -22,16 +22,42 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- $string['courseid'] = 'Kurs-ID';
- $string['coursename'] = 'Kursname';
- $string['deactivate'] = 'Deaktivieren';
- $string['delete'] = 'Löschen';
- $string['enable'] = 'Meta Cleaner aktivieren';
- $string['enable_help'] = 'Aktivieren Sie die Meta Cleaner-Funktionalität, die abgelaufene Meta-Einschreibungen bereinigt.';
- $string['enrolaction'] = 'Aktion für abgelaufene Meta-Einschreibungen';
- $string['enrolaction_help'] = 'Wählen Sie die Aktion, die für abgelaufene Meta-Einschreibungen ausgeführt werden soll. Sie können sie entweder deaktivieren (inaktiv halten) oder vollständig löschen.';
- $string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
- $string['metaenrolments'] = 'Meta-Einschreibungen';
- $string['nocourses'] = 'Es gibt keine Kurse mit abgelaufenem Enddatum.';
- $string['pluginname'] = 'Meta Cleaner';
- $string['previewheading'] = 'Vorschau der betroffenen Kurse';
+
+$string['action'] = 'Aktion';
+$string['affectedusers'] = 'Betroffene Nutzer';
+$string['allcategories'] = 'Alle Kategorien';
+
+
+$string['courseid'] = 'Kurs-ID';
+$string['coursename'] = 'Kursname';
+
+
+$string['deactivate'] = 'Deaktivieren';
+$string['delete'] = 'Löschen';
+
+
+$string['enable'] = 'Meta Cleaner aktivieren';
+$string['enable_help'] = 'Aktivieren Sie die Meta Cleaner-Funktionalität, die abgelaufene Meta-Einschreibungen bereinigt.';
+$string['enrolaction'] = 'Aktion für abgelaufene Meta-Einschreibungen';
+$string['enrolaction_help'] = 'Wählen Sie die Aktion, die für abgelaufene Meta-Einschreibungen ausgeführt werden soll. Sie können sie entweder deaktivieren (inaktiv halten) oder vollständig löschen.';
+$string['exportcsv'] = 'Als CSV exportieren';
+
+
+$string['filterbycategory'] = 'Nach Kategorie filtern';
+$string['filterbycategory_help'] = 'Bereinige nur Kurse in der ausgewählten Kategorie.';
+
+
+$string['maxusers'] = 'Maximale Anzahl von Nutzern';
+$string['maxusers_help'] = 'Bereinige nur Kurse mit weniger als dieser Anzahl von Nutzern.';
+$string['metaenrolcleanup'] = 'Meta-Enrolment Cleanup';
+$string['metaenrolments'] = 'Meta-Einschreibungen';
+$string['mindays'] = 'Minimale Tage seit Kursende';
+$string['mindays_help'] = 'Bereinige nur Kurse, die vor mindestens so vielen Tagen beendet wurden.';
+
+
+$string['nocourses'] = 'Keine Kurse entsprechen den ausgewählten Kriterien.';
+
+
+$string['pluginname'] = 'Meta Cleaner';
+$string['pluginnotenabled'] = 'Meta Cleaner ist nicht aktiviert.';
+$string['previewheading'] = 'Vorschau der betroffenen Kurse';

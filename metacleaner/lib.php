@@ -33,30 +33,52 @@ function local_metacleaner_cron() {
 
     // Check if the plugin is enabled.
     if (!get_config('local_metacleaner', 'enable')) {
-        // If the plugin is disabled, exit the function.
         return;
     }
 
+    // Get plugin settings.
+    $action = get_config('local_metacleaner', 'action');
+    $categoryfilter = get_config('local_metacleaner', 'category');
+    $maxusers = get_config('local_metacleaner', 'maxusers');
+    $mindays = get_config('local_metacleaner', 'mindays');
+
     // Get all courses whose end date has passed.
     $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
-    // Get the user's preference from the settings (1 = deactivate, 2 = delete).
-    $action = get_config('local_metacleaner', 'action');
 
     foreach ($expiredcourses as $course) {
-        // Get all meta enrollments for this expired course.
-        $metaenrolments = $DB->get_records('enrol', ['enrol' => 'meta', 'customint1' => $course->id]);
+        // Apply category filter.
+        if ($categoryfilter && $course->category != $categoryfilter) {
+            continue;
+        }
 
+        // Calculate days since course end.
+        $dayssinceend = (time() - $course->enddate) / DAYSECS;
+        if ($dayssinceend < $mindays) {
+            continue;
+        }
+
+        // Count the number of users in meta enrolments.
+        $metaenrolments = $DB->get_records('enrol', ['enrol' => 'meta', 'customint1' => $course->id]);
+        $totalusers = 0;
+        foreach ($metaenrolments as $enrol) {
+            $totalusers += $DB->count_records('user_enrolments', ['enrolid' => $enrol->id]);
+        }
+
+        // Apply max users filter.
+        if ($totalusers > $maxusers) {
+            continue;
+        }
+
+        // Perform the action (deactivate or delete).
         foreach ($metaenrolments as $enrol) {
             if ($action == 1) {
-                // Deactivate the meta enrollment instead of deleting it.
+                // Deactivate the meta enrolment.
                 $DB->set_field('enrol', 'status', 1, ['id' => $enrol->id]);
             } else if ($action == 2) {
-                // Delete all users who are in this meta enrollment.
+                // Delete all users in this meta enrolment.
                 $DB->delete_records('user_enrolments', ['enrolid' => $enrol->id]);
-                // Delete the meta enrollment itself.
+                // Delete the meta enrolment itself.
                 $DB->delete_records('enrol', ['id' => $enrol->id]);
-            } else {
-                return false;
             }
         }
     }

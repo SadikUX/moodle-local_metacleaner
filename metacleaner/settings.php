@@ -48,6 +48,33 @@ if ($hassiteconfig) {
         ]
     ));
 
+    // Add a setting to filter by course category.
+    $settings->add(new admin_setting_configselect(
+        'local_metacleaner/category',
+        get_string('filterbycategory', 'local_metacleaner'),
+        get_string('filterbycategory_help', 'local_metacleaner'),
+        0,
+        [0 => get_string('allcategories', 'local_metacleaner')] + core_course_category::make_categories_list()
+    ));
+
+    // Add a setting to filter by maximum number of users.
+    $settings->add(new admin_setting_configtext(
+        'local_metacleaner/maxusers',
+        get_string('maxusers', 'local_metacleaner'),
+        get_string('maxusers_help', 'local_metacleaner'),
+        100,
+        PARAM_INT
+    ));
+
+    // Add a setting to filter by minimum days since course end.
+    $settings->add(new admin_setting_configtext(
+        'local_metacleaner/mindays',
+        get_string('mindays', 'local_metacleaner'),
+        get_string('mindays_help', 'local_metacleaner'),
+        30,
+        PARAM_INT
+    ));
+
     // Register the settings page under 'localplugins'.
     $ADMIN->add('localplugins', $settings);
 
