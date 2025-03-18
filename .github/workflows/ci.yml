@@ -10,7 +10,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: plugin
+          path: metacleaner
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -26,19 +26,19 @@ jobs:
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
 
       - name: PHP Lint
-        run: moodle-plugin-ci phplint --plugin=./plugin
+        run: moodle-plugin-ci phplint ./metacleaner
 
       - name: PHP Mess Detector
-        run: moodle-plugin-ci phpmd --plugin=./plugin
+        run: moodle-plugin-ci phpmd ./metacleaner
 
       - name: Moodle Code Checker
-        run: moodle-plugin-ci phpcs --plugin=./plugin --max-warnings 0
+        run: moodle-plugin-ci phpcs ./metacleaner --max-warnings 0
 
       - name: Moodle PHPDoc Checker
-        run: moodle-plugin-ci phpdoc --plugin=./plugin --max-warnings 0
+        run: moodle-plugin-ci phpdoc ./metacleaner --max-warnings 0
 
       - name: Mustache Lint
-        run: moodle-plugin-ci mustache --plugin=./plugin
+        run: moodle-plugin-ci mustache ./metacleaner
 
       - name: Validate Plugin Structure
-        run: moodle-plugin-ci validate --plugin=./plugin
+        run: moodle-plugin-ci validate ./metacleaner
