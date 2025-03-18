@@ -25,16 +25,16 @@ jobs:
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
       # PHP Lint
       - name: PHP Lint
-        run: moodle-plugin-ci phplint
+        run: moodle-plugin-ci phplint plugin
 
       # PHP Mess Detector (code quality analysis)
       - name: PHP Mess Detector
-        run: moodle-plugin-ci phpmd
+        run: moodle-plugin-ci phpmd plugin
 
       # Moodle Code Checker (PHPCS)
       - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs
+        run: moodle-plugin-ci phpcs plugin
 
       # Savepoints Check (optional, ensures savepoints are correct)
       - name: Check savepoints
-        run: moodle-plugin-ci savepoints
+        run: moodle-plugin-ci savepoints plugin
