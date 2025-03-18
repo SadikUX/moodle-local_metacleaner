@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   code-checks:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pluginbranch: [main, dev]
 
     steps:
       - name: Check out repository code
@@ -26,16 +29,16 @@ jobs:
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
 
       - name: Install moodle-plugin-ci
-        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1 --branch ${{ matrix.pluginbranch }}
 
       - name: PHP Lint
-        run: moodle-plugin-ci phplint .
+        run: moodle-plugin-ci phplint ./plugin
 
       - name: PHP Mess Detector
-        run: moodle-plugin-ci phpmd .
+        run: moodle-plugin-ci phpmd ./plugin
 
       - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs .
+        run: moodle-plugin-ci phpcs ./plugin
 
       - name: Check savepoints
-        run: moodle-plugin-ci savepoints .
+        run: moodle-plugin-ci savepoints ./plugin
