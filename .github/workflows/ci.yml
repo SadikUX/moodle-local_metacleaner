@@ -1,4 +1,4 @@
-name: Moodle Plugin CI
+name: MetaCleaner Plugin CI
 
 on: [push, pull_request]
 
@@ -10,13 +10,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.0'
           extensions: intl, soap
           tools: composer
 
+      # Install moodle-plugin-ci (for code checks)
       - name: Install moodle-plugin-ci
         run: |
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
@@ -27,18 +28,22 @@ jobs:
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./metacleaner
 
-      # PHP Mess Detector
+      # PHP Mess Detector (code quality analysis)
       - name: PHP Mess Detector
         run: moodle-plugin-ci phpmd ./metacleaner
 
-      # Moodle Code Sniffer (Code Style Check)
+      # Moodle Code Checker (PHPCS)
       - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs ./metacleaner --standard=moodle
+        run: moodle-plugin-ci phpcs ./metacleaner
 
-      # PHPDoc Checker
-      - name: PHPDoc Checker
+      # PHPDoc Checker (Optional, but can be skipped if not needed)
+      - name: Moodle PHPDoc Checker
         run: moodle-plugin-ci phpdoc ./metacleaner --max-warnings 0
 
-      # Optional: Validation of Plugin-Structure
-      - name: Validate Plugin Structure
-        run: moodle-plugin-ci validate ./metacleaner
+      # Grunt (optional, for linting template files if any)
+      - name: Grunt
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
+
+      # Savepoints Check (optional, ensures savepoints are correct)
+      - name: Check savepoints
+        run: moodle-plugin-ci savepoints ./metacleaner
