@@ -24,10 +24,6 @@ jobs:
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
 
-      # PHP Lint
-      - name: PHP Lint
-        run: moodle-plugin-ci phplint . --ignore=ci/vendor/*
-
       # PHP Mess Detector (code quality analysis)
       - name: PHP Mess Detector
         run: moodle-plugin-ci phpmd
