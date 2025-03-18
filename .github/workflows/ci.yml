@@ -7,8 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Check out repository code
         uses: actions/checkout@v4
+        with:
+          path: plugin
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -17,25 +19,23 @@ jobs:
           extensions: intl, soap
           tools: composer
 
-      # Install moodle-plugin-ci (for code checks)
-      - name: Install moodle-plugin-ci
+      - name: Initialise moodle-plugin-ci
         run: |
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
 
-      # PHP Lint
+      - name: Install moodle-plugin-ci
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+
       - name: PHP Lint
-        run: moodle-plugin-ci phplint ./
+        run: moodle-plugin-ci phplint .
 
-      # PHP Mess Detector (code quality analysis)
       - name: PHP Mess Detector
-        run: moodle-plugin-ci phpmd ./
+        run: moodle-plugin-ci phpmd .
 
-      # Moodle Code Checker (PHPCS)
       - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs ./
+        run: moodle-plugin-ci phpcs .
 
-      # Savepoints Check (optional, ensures savepoints are correct)
       - name: Check savepoints
-        run: moodle-plugin-ci savepoints ./
+        run: moodle-plugin-ci savepoints .
