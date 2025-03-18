@@ -1,0 +1,44 @@
+name: Moodle Plugin CI
+
+on: [push, pull_request]
+
+jobs:
+  code-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: intl, soap
+          tools: composer
+
+      - name: Install moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
+          echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
+
+      - name: PHP Lint
+        run: moodle-plugin-ci phplint
+
+      - name: PHP Mess Detector
+        run: moodle-plugin-ci phpmd
+
+      - name: Moodle Code Checker
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Moodle PHPDoc Checker
+        run: moodle-plugin-ci phpdoc --max-warnings 0
+
+      - name: Mustache Lint
+        run: moodle-plugin-ci mustache
+
+      - name: Validate Plugin Structure
+        run: moodle-plugin-ci validate
