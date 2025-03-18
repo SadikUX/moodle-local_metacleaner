@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: metacleaner
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -26,7 +24,7 @@ jobs:
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
 
       - name: PHP Lint
-        run: moodle-plugin-ci phplint /metacleaner
+        run: moodle-plugin-ci phplint ./metacleaner
 
       - name: PHP Mess Detector
         run: moodle-plugin-ci phpmd ./metacleaner
