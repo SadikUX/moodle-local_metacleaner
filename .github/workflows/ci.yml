@@ -26,7 +26,7 @@ jobs:
 
       # PHP Lint
       - name: PHP Lint
-        run: moodle-plugin-ci phplint
+        run: moodle-plugin-ci phplint .
 
       # PHP Mess Detector (code quality analysis)
       - name: PHP Mess Detector
