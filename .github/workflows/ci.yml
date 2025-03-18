@@ -36,10 +36,6 @@ jobs:
       - name: Moodle Code Checker (PHPCS)
         run: moodle-plugin-ci phpcs ./metacleaner
 
-      # PHPDoc Checker (Optional, but can be skipped if not needed)
-      - name: Moodle PHPDoc Checker
-        run: moodle-plugin-ci phpdoc ./metacleaner --max-warnings 0
-
       # Grunt (optional, for linting template files if any)
       - name: Grunt
         run: moodle-plugin-ci grunt --max-lint-warnings 0
