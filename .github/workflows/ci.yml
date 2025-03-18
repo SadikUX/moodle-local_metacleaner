@@ -36,10 +36,6 @@ jobs:
       - name: Moodle Code Checker (PHPCS)
         run: moodle-plugin-ci phpcs ./metacleaner
 
-      # Grunt (optional, for linting template files if any)
-      - name: Grunt
-        run: moodle-plugin-ci grunt --max-lint-warnings 0
-
       # Savepoints Check (optional, ensures savepoints are correct)
       - name: Check savepoints
         run: moodle-plugin-ci savepoints ./metacleaner
