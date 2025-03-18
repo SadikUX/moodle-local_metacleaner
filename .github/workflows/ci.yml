@@ -13,29 +13,28 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.0'
           extensions: intl, soap
           tools: composer
 
-      # Install moodle-plugin-ci for code checks
+      # Install moodle-plugin-ci (for code checks)
       - name: Install moodle-plugin-ci
         run: |
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
-
-      # PHP Lint for the entire project in the root directory
+      # PHP Lint
       - name: PHP Lint
-        run: moodle-plugin-ci phplint ./ 
+        run: moodle-plugin-ci phplint .
 
-      # PHP Mess Detector for code quality analysis in the root directory
+      # PHP Mess Detector (code quality analysis)
       - name: PHP Mess Detector
-        run: moodle-plugin-ci phpmd ./ 
+        run: moodle-plugin-ci phpmd .
 
-      # Moodle Code Checker (PHPCS) for the root directory
+      # Moodle Code Checker (PHPCS)
       - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs ./ 
+        run: moodle-plugin-ci phpcs .
 
-      # Check savepoints in the root directory
+      # Savepoints Check (optional, ensures savepoints are correct)
       - name: Check savepoints
-        run: moodle-plugin-ci savepoints ./ 
+        run: moodle-plugin-ci savepoints .
