@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pluginbranch: [main, dev]
+        pluginbranch: [main]
 
     steps:
       - name: Check out repository code
