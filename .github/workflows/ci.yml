@@ -31,13 +31,20 @@ jobs:
         image: moodlehq/moodle-php-apache:8.0
         env:
           MOODLE_DATABASE: ${{ matrix.database }}
-          MOODLE_DB_HOST: localhost
+          MOODLE_DB_TYPE: ${{ matrix.database == 'mariadb' && 'mysqli' || 'pgsql' }}
+          MOODLE_DB_HOST: ${{ matrix.database }}
           MOODLE_DB_USER: root
           MOODLE_DB_PASS: ""
           MOODLE_DB_NAME: moodle
+          MOODLE_WWWROOT: "http://localhost:8080"
         ports:
           - 8080:80
-        options: --health-cmd "curl --silent --fail http://localhost:8080" --health-interval 10s --health-timeout 5s --health-retries 3
+        options: >-
+          --health-cmd "curl --silent --fail http://localhost:8080"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+          -v /tmp/moodledata:/var/www/moodledata
 
     strategy:
       fail-fast: false
@@ -96,3 +103,7 @@ jobs:
         run: |
           cd /var/www/html/moodle
           vendor/bin/phpunit --testsuite=local_metacleaner
+
+      - name: Debug Moodle Container Logs (Falls der Container fehlschlägt)
+        if: failure()
+        run: docker logs $(docker ps -q --filter "ancestor=moodlehq/moodle-php-apache:8.0")
