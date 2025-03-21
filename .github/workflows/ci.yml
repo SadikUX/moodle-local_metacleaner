@@ -64,6 +64,14 @@ jobs:
       - name: Moodle Code Checker (PHPCS)
         run: moodle-plugin-ci phpcs ./plugin
 
+      - name: Moodle PHPDoc Checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpdoc ./plugin --max-warnings 0
+
+      - name: Validating
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci validate ./plugin
+
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./plugin
 
