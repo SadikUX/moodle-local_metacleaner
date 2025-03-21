@@ -46,14 +46,12 @@ jobs:
           extensions: intl, soap
           tools: composer
 
-      - name: Install moodle-plugin-ci
+        - name: Install moodle-plugin-ci
         run: |
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
-          export PATH=$PATH:$(cd ci/bin; pwd)
-          export PATH=$PATH:$(cd ci/vendor/bin; pwd)
-
+          
       - name: Install Moodle Codechecker
         run: |
           git clone --depth 1 https://github.com/moodlehq/moodle-local_codechecker.git local/codechecker
