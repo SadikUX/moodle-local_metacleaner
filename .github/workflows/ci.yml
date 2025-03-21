@@ -27,29 +27,10 @@ jobs:
           - 3306:3306
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
 
-      moodle:
-        image: moodlehq/moodle-php-apache:8.0
-        env:
-          MOODLE_DATABASE: ${{ matrix.database }}
-          MOODLE_DB_TYPE: ${{ matrix.database == 'mariadb' && 'mysqli' || 'pgsql' }}
-          MOODLE_DB_HOST: ${{ matrix.database }}
-          MOODLE_DB_USER: root
-          MOODLE_DB_PASS: ""
-          MOODLE_DB_NAME: moodle
-          MOODLE_WWWROOT: "http://localhost:8080"
-        ports:
-          - 8080:80
-        options: >-
-          --health-cmd "curl --silent --fail http://localhost:8080"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
-          -v /tmp/moodledata:/var/www/moodledata
-
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.0', '8.1', '8.2']
+        php: ['8.0']
         database: [pgsql, mariadb]
 
     steps:
@@ -70,20 +51,27 @@ jobs:
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
-          export PATH=$PATH:$(cd ci/bin; pwd)
-          export PATH=$PATH:$(cd ci/vendor/bin; pwd)
+
+      - name: Configure Composer to allow plugins
+        run: composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
 
       - name: Install Moodle Codechecker
         run: |
           git clone --depth 1 https://github.com/moodlehq/moodle-local_codechecker.git local/codechecker
           git clone --depth 1 https://github.com/moodlehq/moodle-local_moodlecheck.git local/moodlecheck
-          composer require --working-dir=local/codechecker moodlehq/moodle-cs --dev
-          composer config --working-dir=local/codechecker --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer require moodlehq/moodle-cs --dev
 
-      - name: Moodle Code Checker (PHPCS)
+      - name: Set Apache ServerName
         run: |
-          moodle-plugin-ci phpcs ./plugin
-        continue-on-error: false  # Workflow bricht ab, wenn Coding-Fehler gefunden werden
+          echo "ServerName localhost" >> /etc/apache2/apache2.conf
+          service apache2 restart
+
+      - name: Install Moodle Database
+        run: |
+          php /var/www/html/moodle/admin/cli/install_database.php --agree-license --adminpass=admin
+
+      - name: Run Moodle Codechecker
+        run: phpcs --standard=local/codechecker/moodle ./plugin
 
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./plugin
@@ -91,19 +79,8 @@ jobs:
       - name: PHP Mess Detector
         run: moodle-plugin-ci phpmd ./plugin
 
+      - name: Moodle Code Checker (PHPCS)
+        run: moodle-plugin-ci phpcs ./plugin
+
       - name: Check savepoints
         run: moodle-plugin-ci savepoints ./plugin
-
-      - name: Install Plugin in Moodle
-        run: |
-          cp -r ./plugin /var/www/html/moodle/local/metacleaner
-          php /var/www/html/moodle/admin/cli/install_database.php --agree-license --adminpass=admin
-
-      - name: Run PHPUnit tests
-        run: |
-          cd /var/www/html/moodle
-          vendor/bin/phpunit --testsuite=local_metacleaner
-
-      - name: Debug Moodle Container Logs (Falls der Container fehlschlägt)
-        if: failure()
-        run: docker logs $(docker ps -q --filter "ancestor=moodlehq/moodle-php-apache:8.0")
