@@ -51,36 +51,24 @@ jobs:
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
-
-      - name: Configure Composer to allow plugins
-        run: composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          export PATH=$PATH:$(cd ci/bin; pwd)
+          export PATH=$PATH:$(cd ci/vendor/bin; pwd)
 
       - name: Install Moodle Codechecker
         run: |
           git clone --depth 1 https://github.com/moodlehq/moodle-local_codechecker.git local/codechecker
           git clone --depth 1 https://github.com/moodlehq/moodle-local_moodlecheck.git local/moodlecheck
-          composer require moodlehq/moodle-cs --dev
+          composer require --working-dir=local/codechecker moodlehq/moodle-cs --dev
+          composer config --working-dir=local/codechecker --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
 
-      - name: Set Apache ServerName
-        run: |
-          echo "ServerName localhost" >> /etc/apache2/apache2.conf
-          service apache2 restart
-
-      - name: Install Moodle Database
-        run: |
-          php /var/www/html/moodle/admin/cli/install_database.php --agree-license --adminpass=admin
-
-      - name: Run Moodle Codechecker
-        run: phpcs --standard=local/codechecker/moodle ./plugin
+      - name: Moodle Code Checker (PHPCS)
+        run: moodle-plugin-ci phpcs ./plugin
 
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./plugin
 
       - name: PHP Mess Detector
         run: moodle-plugin-ci phpmd ./plugin
-
-      - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs ./plugin
 
       - name: Check savepoints
         run: moodle-plugin-ci savepoints ./plugin
