@@ -27,10 +27,22 @@ jobs:
           - 3306:3306
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
 
+      moodle:
+        image: moodlehq/moodle-php-apache:8.0
+        env:
+          MOODLE_DATABASE: ${{ matrix.database }}
+          MOODLE_DB_HOST: localhost
+          MOODLE_DB_USER: root
+          MOODLE_DB_PASS: ""
+          MOODLE_DB_NAME: moodle
+        ports:
+          - 8080:80
+        options: --health-cmd "curl --silent --fail http://localhost:8080" --health-interval 10s --health-timeout 5s --health-retries 3
+
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.0']
+        php: ['8.0', '8.1', '8.2']
         database: [pgsql, mariadb]
 
     steps:
@@ -62,7 +74,9 @@ jobs:
           composer config --working-dir=local/codechecker --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
 
       - name: Moodle Code Checker (PHPCS)
-        run: moodle-plugin-ci phpcs ./plugin
+        run: |
+          moodle-plugin-ci phpcs ./plugin
+        continue-on-error: false  # Workflow bricht ab, wenn Coding-Fehler gefunden werden
 
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./plugin
@@ -72,3 +86,13 @@ jobs:
 
       - name: Check savepoints
         run: moodle-plugin-ci savepoints ./plugin
+
+      - name: Install Plugin in Moodle
+        run: |
+          cp -r ./plugin /var/www/html/moodle/local/metacleaner
+          php /var/www/html/moodle/admin/cli/install_database.php --agree-license --adminpass=admin
+
+      - name: Run PHPUnit tests
+        run: |
+          cd /var/www/html/moodle
+          vendor/bin/phpunit --testsuite=local_metacleaner
