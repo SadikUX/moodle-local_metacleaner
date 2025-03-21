@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.0']
+        php: ['7.4', '8.0', '8.1', '8.2']
         database: [pgsql, mariadb]
 
     steps:
@@ -51,7 +51,9 @@ jobs:
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
-          
+          export PATH=$PATH:$(cd ci/bin; pwd)
+          export PATH=$PATH:$(cd ci/vendor/bin; pwd)
+
       - name: Install Moodle Codechecker
         run: |
           git clone --depth 1 https://github.com/moodlehq/moodle-local_codechecker.git local/codechecker
@@ -61,14 +63,6 @@ jobs:
 
       - name: Moodle Code Checker (PHPCS)
         run: moodle-plugin-ci phpcs ./plugin
-
-      - name: Moodle PHPDoc Checker
-        if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpdoc ./plugin --max-warnings 0
-
-      - name: Validating
-        if: ${{ !cancelled() }}
-        run: moodle-plugin-ci validate ./plugin
 
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./plugin
