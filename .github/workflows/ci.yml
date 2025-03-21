@@ -52,7 +52,16 @@ jobs:
           composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
           echo "$(cd ci/bin; pwd)" >> $GITHUB_PATH
           echo "$(cd ci/vendor/bin; pwd)" >> $GITHUB_PATH
+      
+      - name: Install Moodle Codechecker
+        run: |
+          git clone --depth 1 https://github.com/moodlehq/moodle-local_codechecker.git local/codechecker
+          git clone --depth 1 https://github.com/moodlehq/moodle-local_moodlecheck.git local/moodlecheck
+          composer require moodlehq/moodle-cs --dev
 
+      - name: Run Moodle Codechecker
+        run: phpcs --standard=local/codechecker/moodle ./plugin
+        
       - name: PHP Lint
         run: moodle-plugin-ci phplint ./plugin
 
