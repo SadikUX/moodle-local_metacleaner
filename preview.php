@@ -142,8 +142,6 @@ echo $OUTPUT->footer();
  * @param int $action The action to be performed (1 = deactivate, 2 = delete).
  */
 function export_preview_to_csv($filteredcourses, $action) {
-    global $DB;
-
     // Set CSV headers.
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename="metacleaner_preview.csv"');
