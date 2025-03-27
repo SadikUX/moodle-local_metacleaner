@@ -40,7 +40,7 @@ if (!get_config('local_metacleaner', 'enable')) {
     exit;
 }
 
-global $DB, $OUTPUT; // Access global database and output objects.
+global $DB, $OUTPUT, $PAGE; // Access global database, output objects and page API.
 
 // Get plugin settings.
 $categoryfilter = get_config('local_metacleaner', 'category');
@@ -48,10 +48,22 @@ $maxusers = get_config('local_metacleaner', 'maxusers');
 $mindays = get_config('local_metacleaner', 'mindays');
 $action = get_config('local_metacleaner', 'action'); // 1 = deactivate, 2 = delete.
 
-// Retrieve courses whose end date has passed.
+// Fetch all expired courses with a single query.
 $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
 
-// Apply filters based on plugin settings.
+// Fetch all meta enrolments in bulk for the courses.
+$courseids = array_map(fn($course) => $course->id, $expiredcourses);
+$metaenrolments = $DB->get_records_select(
+    'enrol',
+    'enrol = ? AND customint1 IN (' . implode(',', array_fill(0, count($courseids), '?')) . ')',
+    array_merge(['meta'], $courseids)
+);
+
+// Fetch all user enrolments in bulk.
+$metaenrolmentids = array_map(fn($metaenrol) => $metaenrol->id, $metaenrolments);
+$userenrolments = $DB->get_records_list('user_enrolments', 'enrolid', $metaenrolmentids);
+
+// Process each course and filter them.
 $filteredcourses = [];
 foreach ($expiredcourses as $course) {
     // Apply category filter.
@@ -65,11 +77,12 @@ foreach ($expiredcourses as $course) {
         continue;
     }
 
-    // Count the number of users in meta enrolments.
-    $metaenrolments = $DB->get_records('enrol', ['enrol' => 'meta', 'customint1' => $course->id]);
+    // Get the relevant meta enrolments for the current course.
+    $coursemetaenrolments = array_filter($metaenrolments, fn($enrol) => $enrol->customint1 == $course->id);
     $totalusers = 0;
-    foreach ($metaenrolments as $enrol) {
-        $totalusers += $DB->count_records('user_enrolments', ['enrolid' => $enrol->id]);
+    foreach ($coursemetaenrolments as $enrol) {
+        // Count the users enrolled in each meta enrolment.
+        $totalusers += count(array_filter($userenrolments, fn($userenrol) => $userenrol->enrolid == $enrol->id));
     }
 
     // Apply max users filter.
@@ -80,14 +93,34 @@ foreach ($expiredcourses as $course) {
     // Add the course to the filtered list.
     $filteredcourses[] = (object)[
         'course' => $course,
-        'metaenrolments' => count($metaenrolments),
+        'metaenrolments' => count($coursemetaenrolments),
         'affectedusers' => $totalusers,
     ];
 }
 
+// Pagination.
+$totalcourses = count($filteredcourses);
+$perpage = get_config('local_metacleaner', 'previewlimit') ?: 10; // Number of courses per page.
+$page = optional_param('page', 0, PARAM_INT); // Current page.
+
+// Calculate the start position of the courses for the current page.
+$start = $page * $perpage;
+
+// Slice the courses for the current page.
+$pagecourses = array_slice($filteredcourses, $start, $perpage);
+
+// URL for pagination.
+$url = new moodle_url('/local/metacleaner/preview.php', ['page' => $page]);
+
+// Initialize the paging bar.
+$pagingbar = new paging_bar($totalcourses, $page, $perpage, $url);
+
+// Prepare the paging bar for output.
+$pagingbar->prepare($PAGE->get_renderer('core'), $PAGE, $url);
+
 // Handle CSV export.
 if (optional_param('export', false, PARAM_BOOL)) {
-    export_preview_to_csv($filteredcourses, $action);
+    local_metacleaner_export_preview_to_csv($filteredcourses, $action);
     exit;
 }
 
@@ -110,8 +143,8 @@ if (empty($filteredcourses)) {
         get_string('action', 'local_metacleaner'), // Column for action.
     ];
 
-    // Loop through each filtered course.
-    foreach ($filteredcourses as $filteredcourse) {
+    // Loop through each filtered course for the current page.
+    foreach ($pagecourses as $filteredcourse) {
         $actiontext = ($action == 1) ? get_string('deactivate', 'local_metacleaner') : get_string('delete', 'local_metacleaner');
 
         // Add a row to the table with course details.
@@ -127,6 +160,9 @@ if (empty($filteredcourses)) {
     // Render the table on the page.
     echo html_writer::table($table);
 
+    // Output the pagination links.
+    echo $OUTPUT->render($pagingbar);
+
     // Add an export button.
     $exporturl = new moodle_url('/local/metacleaner/preview.php', ['export' => 1]);
     echo $OUTPUT->single_button($exporturl, get_string('exportcsv', 'local_metacleaner'));
@@ -141,7 +177,7 @@ echo $OUTPUT->footer();
  * @param array $filteredcourses List of filtered courses.
  * @param int $action The action to be performed (1 = deactivate, 2 = delete).
  */
-function export_preview_to_csv($filteredcourses, $action) {
+function local_metacleaner_export_preview_to_csv($filteredcourses, $action) {
     // Set CSV headers.
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename="metacleaner_preview.csv"');

@@ -75,6 +75,15 @@ if ($hassiteconfig && has_capability('local/metacleaner:manage', context_system:
         PARAM_INT
     ));
 
+    // Add a setting to limit the number of courses per page on the preview page.
+    $settings->add(new admin_setting_configtext(
+        'local_metacleaner/previewlimit',
+        get_string('previewlimit', 'local_metacleaner'),
+        get_string('previewlimit_help', 'local_metacleaner'),
+        10,
+        PARAM_INT
+    ));
+
     // Register the settings page under 'localplugins'.
     $ADMIN->add('localplugins', $settings);
 

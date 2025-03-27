@@ -74,6 +74,8 @@ $string['plugin_disabled'] = 'Meta Cleaner ist deaktiviert. Vorgang wird beendet
 $string['pluginname'] = 'Meta Cleaner';
 $string['pluginnotenabled'] = 'Meta Cleaner ist nicht aktiviert.';
 $string['previewheading'] = 'Vorschau der betroffenen Kurse';
+$string['previewlimit'] = 'Vorschaulimit pro Seite';
+$string['previewlimit_help'] = 'Die Anzahl der Kurse, die pro Seite auf der Vorschauseite angezeigt werden sollen.';
 $string['privacy:metadata'] = 'Das MetaCleaner-Plugin speichert keine personenbezogenen Daten.';
 $string['processing_course'] = 'Kurs {$a->id} ({$a->fullname}) mit {$a->users} Nutzern wird verarbeitet.';
 

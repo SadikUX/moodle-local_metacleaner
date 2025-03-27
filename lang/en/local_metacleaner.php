@@ -74,6 +74,8 @@ $string['plugin_disabled'] = 'MetaCleaner is disabled. Exiting.';
 $string['pluginname'] = 'Meta Cleaner';
 $string['pluginnotenabled'] = 'Meta Cleaner not enabled.';
 $string['previewheading'] = 'Preview affected courses';
+$string['previewlimit'] = 'Preview Limit per Page';
+$string['previewlimit_help'] = 'The number of courses to display per page on the preview page.';
 $string['privacy:metadata'] = 'The MetaCleaner plugin does not store any personal data.';
 $string['processing_course'] = 'Processing course {$a->id} ({$a->fullname}) with {$a->users} users.';
 

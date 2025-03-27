@@ -23,13 +23,14 @@ namespace local_metacleaner\privacy;
  * @copyright  2025 Sadik Mert
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements null_provider {
+class provider implements \core_privacy\local\metadata\null_provider {
+
     /**
      * Returns a reason why this plugin does not store any personal data.
      *
      * @return string
      */
     public static function get_reason(): string {
-        return get_string('privacy:metadata', 'local_metacleaner');
+        return 'privacy:metadata';
     }
 }
