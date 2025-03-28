@@ -51,12 +51,29 @@ $action = get_config('local_metacleaner', 'action'); // 1 = deactivate, 2 = dele
 // Fetch all expired courses with a single query.
 $expiredcourses = $DB->get_records_select('course', 'enddate > 0 AND enddate < ?', [time()]);
 
+// If no expired courses are found, display a notification and stop execution early.
+if (empty($expiredcourses)) {
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('previewheading', 'local_metacleaner'));
+    echo $OUTPUT->notification(get_string('nocourses', 'local_metacleaner'), 'notifymessage');
+    echo $OUTPUT->footer();
+    exit;
+}
+
 // Fetch all meta enrolments in bulk for the courses.
 $courseids = array_map(fn($course) => $course->id, $expiredcourses);
+
+// Generate the SQL fragment and parameters for the IN clause based on course IDs.
+list($insql, $inparams) = $DB->get_in_or_equal($courseids, SQL_PARAMS_QM);
+
+// Merge 'meta' as the first parameter with the generated parameters.
+$params = array_merge(['meta'], $inparams);
+
+// Retrieve all enrolment records where enrol type is 'meta' and customint1 matches the course IDs.
 $metaenrolments = $DB->get_records_select(
     'enrol',
-    'enrol = ? AND customint1 IN (' . implode(',', array_fill(0, count($courseids), '?')) . ')',
-    array_merge(['meta'], $courseids)
+    'enrol = ? AND customint1 ' . $insql,
+    $params
 );
 
 // Fetch all user enrolments in bulk.
