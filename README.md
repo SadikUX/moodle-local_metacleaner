@@ -29,7 +29,7 @@ The plugin runs scheduled tasks that automatically manage Meta Link enrollments 
 
 ## Language Files
 
-The plugin currently supports English. Support for additional languages, including German, is planned for future updates. All messages are pulled from the language file configured for your Moodle installation.
+The plugin currently supports English and German. All messages are pulled from the language file configured for your Moodle installation.
 
 ## Developer
 
